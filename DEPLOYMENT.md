@@ -37,6 +37,12 @@ LANGUAGE=en-US
 TIMEZONE=America/New_York
 WINDOW_WIDTH=1920
 WINDOW_HEIGHT=1080
+
+# Proxy Configuration (Optional - for bypassing IP blocks)
+PROXY_ENABLED=false
+PROXY_SERVER=socks5://your-proxy-server:1080
+PROXY_USERNAME=your-proxy-username
+PROXY_PASSWORD=your-proxy-password
 ```
 
 ### 3. Create Data Directory and Run
@@ -198,6 +204,56 @@ echo "TARGET_URL=https://your-website.com" > .env
 docker-compose -f docker/compose.prod.yaml up
 ```
 
+## Enhanced Stealth Features
+
+The crawler now includes comprehensive stealth capabilities to bypass bot detection:
+
+### Automatic Stealth Techniques
+- **WebDriver masking**: Hides automation indicators
+- **Chrome runtime simulation**: Mimics real browser behavior  
+- **Hardware fingerprinting**: Realistic CPU, memory, and screen properties
+- **API spoofing**: Battery, connection, and permissions APIs
+- **Canvas/WebGL masking**: Prevents fingerprinting through graphics
+- **Human-like behavior**: Random mouse movements and scrolling patterns
+
+### Proxy Support for IP Blocking
+
+If your server IP is blocked by the target website, you can use a proxy:
+
+```env
+# Enable proxy support
+PROXY_ENABLED=true
+PROXY_SERVER=socks5://your-residential-proxy:1080
+PROXY_USERNAME=your-username
+PROXY_PASSWORD=your-password
+```
+
+**Supported proxy formats:**
+- `socks5://proxy:1080`
+- `http://proxy:8080`
+- `https://proxy:8080`
+
+### Troubleshooting Bot Detection
+
+If you're still getting blocked after enabling enhanced stealth:
+
+1. **Try stealth test first:**
+   ```env
+   STEALTH_TEST=true
+   ```
+   This will visit `https://bot.sannysoft.com/` to test your stealth effectiveness.
+
+2. **Enable proxy support** (most effective for IP-based blocking):
+   ```env
+   PROXY_ENABLED=true
+   PROXY_SERVER=socks5://your-residential-proxy:1080
+   ```
+
+3. **Check the logs** for detection warnings:
+   ```bash
+   docker-compose -f docker/compose.prod.yaml logs crawler
+   ```
+
 ## Environment Variables
 
 | Variable | Default | Description |
@@ -209,3 +265,7 @@ docker-compose -f docker/compose.prod.yaml up
 | `TIMEZONE` | `America/New_York` | System timezone |
 | `WINDOW_WIDTH` | `1920` | Browser window width |
 | `WINDOW_HEIGHT` | `1080` | Browser window height |
+| `PROXY_ENABLED` | `false` | Enable proxy support |
+| `PROXY_SERVER` | - | Proxy server URL |
+| `PROXY_USERNAME` | - | Proxy authentication username |
+| `PROXY_PASSWORD` | - | Proxy authentication password |
