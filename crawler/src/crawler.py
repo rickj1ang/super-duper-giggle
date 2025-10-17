@@ -161,9 +161,6 @@ def run() -> int:
     os.makedirs("/app/data", exist_ok=True)
     driver = connect_remote_driver()
     try:
-        # Apply stealth masks immediately after connection
-        apply_stealth_masks(driver)
-        
         # Apply additional CDP-based stealth if not using proxy
         if not config.PROXY_ENABLED:
             apply_additional_stealth_cdp(driver)
@@ -172,6 +169,9 @@ def run() -> int:
             print("Running stealth test...")
             driver.get("https://bot.sannysoft.com/")
             wait_for_idle(driver, config.PAGE_IDLE_MS)
+            
+            # Apply stealth masks after page loads
+            apply_stealth_masks(driver)
             
             # Human-like behavior on test page
             simulate_human_mouse_movement(driver)
@@ -185,6 +185,9 @@ def run() -> int:
         
         # Wait for page to load completely
         wait_for_idle(driver, config.PAGE_IDLE_MS)
+        
+        # Apply stealth masks after page loads to avoid timing issues
+        apply_stealth_masks(driver)
         
         # Add human-like delay before interaction
         time.sleep(random.uniform(2.0, 5.0))

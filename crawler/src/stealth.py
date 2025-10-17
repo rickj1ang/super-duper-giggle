@@ -24,7 +24,15 @@ def apply_stealth_masks(driver: WebDriver) -> None:
 def _mask_webdriver_property(driver: WebDriver) -> None:
     # navigator.webdriver -> undefined
     driver.execute_script(
-        "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
+        """
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
+        """
     )
 
 
@@ -32,9 +40,15 @@ def _mask_chrome_runtime(driver: WebDriver) -> None:
     # navigator.chrome runtime stub
     driver.execute_script(
         """
-        Object.defineProperty(navigator, 'chrome', {
-          get: () => ({ runtime: {} })
-        });
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'chrome', {
+              get: () => ({ runtime: {} })
+            });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
         """
     )
 
@@ -43,12 +57,18 @@ def _mask_plugins_languages(driver: WebDriver) -> None:
     # plugins and languages
     driver.execute_script(
         """
-        Object.defineProperty(navigator, 'plugins', {
-          get: () => [1,2,3,4,5]
-        });
-        Object.defineProperty(navigator, 'languages', {
-          get: () => ['en-US', 'en']
-        });
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'plugins', {
+              get: () => [1,2,3,4,5]
+            });
+            Object.defineProperty(navigator, 'languages', {
+              get: () => ['en-US', 'en']
+            });
+          } catch (e) {
+            // Ignore if properties can't be defined
+          }
+        }
         """
     )
 
@@ -98,13 +118,15 @@ def _mask_permissions_api(driver: WebDriver) -> None:
     # Mock permissions API with realistic states
     driver.execute_script(
         """
-        const originalQuery = navigator.permissions.query;
-        navigator.permissions.query = function(permission) {
-          return Promise.resolve({
-            state: permission.name === 'notifications' ? 'default' : 'granted',
-            onchange: null
-          });
-        };
+        if (navigator && navigator.permissions) {
+          const originalQuery = navigator.permissions.query;
+          navigator.permissions.query = function(permission) {
+            return Promise.resolve({
+              state: permission.name === 'notifications' ? 'default' : 'granted',
+              onchange: null
+            });
+          };
+        }
         """
     )
 
@@ -113,14 +135,20 @@ def _mask_battery_api(driver: WebDriver) -> None:
     # Mock battery API with realistic values
     driver.execute_script(
         """
-        Object.defineProperty(navigator, 'getBattery', {
-          get: () => () => Promise.resolve({
-            charging: Math.random() > 0.3,
-            chargingTime: Math.floor(Math.random() * 7200),
-            dischargingTime: Math.floor(Math.random() * 28800),
-            level: 0.7 + Math.random() * 0.3
-          })
-        });
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'getBattery', {
+              get: () => () => Promise.resolve({
+                charging: Math.random() > 0.3,
+                chargingTime: Math.floor(Math.random() * 7200),
+                dischargingTime: Math.floor(Math.random() * 28800),
+                level: 0.7 + Math.random() * 0.3
+              })
+            });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
         """
     )
 
@@ -129,14 +157,20 @@ def _mask_connection_api(driver: WebDriver) -> None:
     # Mock network connection API
     driver.execute_script(
         """
-        Object.defineProperty(navigator, 'connection', {
-          get: () => ({
-            effectiveType: '4g',
-            downlink: 10 + Math.random() * 5,
-            rtt: 50 + Math.random() * 100,
-            saveData: false
-          })
-        });
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'connection', {
+              get: () => ({
+                effectiveType: '4g',
+                downlink: 10 + Math.random() * 5,
+                rtt: 50 + Math.random() * 100,
+                saveData: false
+              })
+            });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
         """
     )
 
@@ -145,15 +179,21 @@ def _mask_hardware_properties(driver: WebDriver) -> None:
     # Mock hardware properties
     driver.execute_script(
         """
-        Object.defineProperty(navigator, 'hardwareConcurrency', {
-          get: () => 8
-        });
-        Object.defineProperty(navigator, 'deviceMemory', {
-          get: () => 8
-        });
-        Object.defineProperty(navigator, 'maxTouchPoints', {
-          get: () => 0
-        });
+        if (navigator && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator, 'hardwareConcurrency', {
+              get: () => 8
+            });
+            Object.defineProperty(navigator, 'deviceMemory', {
+              get: () => 8
+            });
+            Object.defineProperty(navigator, 'maxTouchPoints', {
+              get: () => 0
+            });
+          } catch (e) {
+            // Ignore if properties can't be defined
+          }
+        }
         """
     )
 
@@ -162,12 +202,18 @@ def _mask_screen_properties(driver: WebDriver) -> None:
     # Mock screen properties
     driver.execute_script(
         """
-        Object.defineProperty(screen, 'colorDepth', {
-          get: () => 24
-        });
-        Object.defineProperty(screen, 'pixelDepth', {
-          get: () => 24
-        });
+        if (screen && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(screen, 'colorDepth', {
+              get: () => 24
+            });
+            Object.defineProperty(screen, 'pixelDepth', {
+              get: () => 24
+            });
+          } catch (e) {
+            // Ignore if properties can't be defined
+          }
+        }
         """
     )
 
@@ -176,12 +222,18 @@ def _mask_media_devices(driver: WebDriver) -> None:
     # Mock media devices enumeration
     driver.execute_script(
         """
-        Object.defineProperty(navigator.mediaDevices, 'enumerateDevices', {
-          value: () => Promise.resolve([
-            { deviceId: 'default', kind: 'audioinput', label: 'Default - Microphone' },
-            { deviceId: 'default', kind: 'audiooutput', label: 'Default - Speaker' }
-          ])
-        });
+        if (navigator && navigator.mediaDevices && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(navigator.mediaDevices, 'enumerateDevices', {
+              value: () => Promise.resolve([
+                { deviceId: 'default', kind: 'audioinput', label: 'Default - Microphone' },
+                { deviceId: 'default', kind: 'audiooutput', label: 'Default - Speaker' }
+              ])
+            });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
         """
     )
 
@@ -190,9 +242,15 @@ def _mask_notification_permissions(driver: WebDriver) -> None:
     # Mock notification permission
     driver.execute_script(
         """
-        Object.defineProperty(Notification, 'permission', {
-          get: () => 'default'
-        });
+        if (typeof Notification !== 'undefined' && typeof Object.defineProperty === 'function') {
+          try {
+            Object.defineProperty(Notification, 'permission', {
+              get: () => 'default'
+            });
+          } catch (e) {
+            // Ignore if property can't be defined
+          }
+        }
         """
     )
 
