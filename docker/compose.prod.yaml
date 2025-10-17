@@ -33,5 +33,5 @@ services:
       - WINDOW_WIDTH=${WINDOW_WIDTH:-1920}
       - WINDOW_HEIGHT=${WINDOW_HEIGHT:-1080}
     volumes:
-      - ./data:/app/data
+      - ../data:/app/data
     restart: "no"

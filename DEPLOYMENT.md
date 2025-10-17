@@ -39,9 +39,12 @@ WINDOW_WIDTH=1920
 WINDOW_HEIGHT=1080
 ```
 
-### 3. Pull and Run the Latest Image
+### 3. Create Data Directory and Run
 
 ```bash
+# Create the data directory for output files
+mkdir -p data
+
 # Pull the latest image
 docker-compose -f docker/compose.prod.yaml pull
 
@@ -174,6 +177,25 @@ Ensure the `data` directory has proper permissions:
 ```bash
 sudo chown -R $USER:$USER data/
 chmod -R 755 data/
+```
+
+## Quick Start Commands
+
+For a fast test run on your server:
+
+```bash
+# 1. Clone and setup
+git clone https://github.com/rickj1ang/super-duper-giggle.git
+cd super-duper-giggle
+
+# 2. Create data directory (IMPORTANT!)
+mkdir -p data
+
+# 3. Configure your target URL
+echo "TARGET_URL=https://your-website.com" > .env
+
+# 4. Run the crawler
+docker-compose -f docker/compose.prod.yaml up
 ```
 
 ## Environment Variables
