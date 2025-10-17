@@ -1,0 +1,37 @@
+services:
+  chrome:
+    image: selenium/standalone-chrome:4.24.0
+    platform: linux/amd64
+    container_name: chrome
+    environment:
+      - SE_VNC_NO_PASSWORD=1
+      - TZ=America/New_York
+      - LANG=en_US.UTF-8
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: 2gb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  crawler:
+    image: ghcr.io/rickj1ang/super-duper-giggle/crawler:latest
+    container_name: crawler
+    depends_on:
+      chrome:
+        condition: service_healthy
+    environment:
+      - TARGET_URL=${TARGET_URL:-https://example.com}
+      - STEALTH_TEST=${STEALTH_TEST:-false}
+      - TIMEOUT=${TIMEOUT:-30}
+      - LANGUAGE=${LANGUAGE:-en-US}
+      - TIMEZONE=${TIMEZONE:-America/New_York}
+      - WINDOW_WIDTH=${WINDOW_WIDTH:-1920}
+      - WINDOW_HEIGHT=${WINDOW_HEIGHT:-1080}
+    volumes:
+      - ./data:/app/data
+    restart: "no"

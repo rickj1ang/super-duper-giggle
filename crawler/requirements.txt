@@ -1,0 +1,8 @@
+selenium==4.24.0
+websocket-client>=1.6.0
+urllib3<2
+certifi>=2024.2.2
+charset-normalizer>=3.3.2
+idna>=3.6
+# Optional: kept for future local uc usage, not used with remote WD
+undetected-chromedriver==3.5.5

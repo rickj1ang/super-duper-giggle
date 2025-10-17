@@ -1,0 +1,39 @@
+services:
+  chrome:
+    image: selenium/standalone-chrome:4.24.0
+    platform: linux/amd64
+    container_name: chrome
+    environment:
+      - SE_VNC_NO_PASSWORD=1
+      - TZ=America/New_York
+      - LANG=en_US.UTF-8
+    shm_size: 2g
+    ports:
+      - "7900:7900" # optional VNC viewer
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  crawler:
+    build:
+      context: ../crawler
+      dockerfile: Dockerfile
+    container_name: crawler
+    environment:
+      - TZ=America/New_York
+      - LANG=en_US.UTF-8
+      - STEALTH_TEST=0
+    depends_on:
+      chrome:
+        condition: service_healthy
+    volumes:
+      - ../data:/app/data
+    command: ["/app/entrypoint.sh"]
+
+volumes:
+  data:
+    driver: local
+
+
