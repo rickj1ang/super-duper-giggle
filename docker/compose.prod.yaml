@@ -24,14 +24,8 @@ services:
     depends_on:
       chrome:
         condition: service_healthy
-    environment:
-      - TARGET_URL=${TARGET_URL:-https://example.com}
-      - STEALTH_TEST=${STEALTH_TEST:-false}
-      - TIMEOUT=${TIMEOUT:-30}
-      - LANGUAGE=${LANGUAGE:-en-US}
-      - TIMEZONE=${TIMEZONE:-America/New_York}
-      - WINDOW_WIDTH=${WINDOW_WIDTH:-1920}
-      - WINDOW_HEIGHT=${WINDOW_HEIGHT:-1080}
+    env_file:
+      - .env
     volumes:
       - ../data:/app/data
     restart: "no"
