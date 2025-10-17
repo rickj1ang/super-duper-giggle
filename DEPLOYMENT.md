@@ -5,27 +5,10 @@ This guide explains how to deploy the crawler on your server using the pre-built
 ## Prerequisites
 
 - Docker and Docker Compose installed on your server
-- Access to the GitHub repository (for pulling the image)
 
-## Authentication with GHCR
+## Public Repository Access
 
-The crawler image is stored in GitHub Container Registry. You have two options for authentication:
-
-### Option 1: Using GitHub Token (Recommended)
-
-1. Create a GitHub Personal Access Token with `read:packages` permission
-2. Login to GHCR on your server:
-
-```bash
-echo $GITHUB_TOKEN | docker login ghcr.io -u rickj1ang --password-stdin
-```
-
-### Option 2: Using Docker Login (Interactive)
-
-```bash
-docker login ghcr.io
-# Enter your GitHub username and Personal Access Token
-```
+The crawler image is stored in GitHub Container Registry as a public repository, so **no authentication is required** to pull the image. You can directly pull and run the container without any login setup.
 
 ## Deployment
 
@@ -160,14 +143,14 @@ sudo journalctl -u crawler.service
 
 ### Image Pull Issues
 
-If you get authentication errors when pulling the image:
+Since the repository is public, you should not encounter authentication errors. If you do see pull issues:
 
 ```bash
-# Re-authenticate with GHCR
-docker login ghcr.io
+# Try pulling the image directly
+docker pull ghcr.io/rickj1ang/super-duper-giggle/crawler:latest
 
-# Or use token method
-echo $GITHUB_TOKEN | docker login ghcr.io -u rickj1ang --password-stdin
+# Check if the image exists
+docker images | grep crawler
 ```
 
 ### Container Startup Issues

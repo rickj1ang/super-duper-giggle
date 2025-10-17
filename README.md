@@ -8,7 +8,7 @@ A stealth web crawler built with Python, Selenium, and Docker. The crawler uses 
 - **Dockerized**: Easy deployment with Docker Compose
 - **Remote WebDriver**: Uses Selenium Grid for scalable crawling
 - **CI/CD Ready**: Automated builds with GitHub Actions
-- **Production Ready**: Pre-built images available on GitHub Container Registry
+- **Production Ready**: Pre-built images available on GitHub Container Registry (public access)
 
 ## Quick Start
 
@@ -33,9 +33,9 @@ A stealth web crawler built with Python, Selenium, and Docker. The crawler uses 
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed server deployment instructions.
 
-**Quick deployment:**
+**Quick deployment (no authentication required):**
 ```bash
-# Pull the latest image
+# Pull the latest image (public repository)
 docker-compose -f docker/compose.prod.yaml pull
 
 # Run the crawler
